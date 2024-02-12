@@ -19,23 +19,37 @@ import '../model/notification_model.dart';
 
 class AuthService {
   static Future<RegUserResp> createUser({required Map request}) async {
-    return RegUserResp.fromJson(await handleResponse(await buildHttpResponse(APIEndPoints.register, request: request, method: HttpMethodType.POST)));
+    return RegUserResp.fromJson(await handleResponse(await buildHttpResponse(
+        APIEndPoints.register,
+        request: request,
+        method: HttpMethodType.POST)));
   }
 
   static Future<LoginResponse> loginUser({required Map request}) async {
-    return LoginResponse.fromJson(await handleResponse(await buildHttpResponse(APIEndPoints.login, request: request, method: HttpMethodType.POST)));
+    return LoginResponse.fromJson(await handleResponse(await buildHttpResponse(
+        APIEndPoints.login,
+        request: request,
+        method: HttpMethodType.POST)));
   }
 
   static Future<ChangePassRes> changePasswordAPI({required Map request}) async {
-    return ChangePassRes.fromJson(await handleResponse(await buildHttpResponse(APIEndPoints.changePassword, request: request, method: HttpMethodType.POST)));
+    return ChangePassRes.fromJson(await handleResponse(await buildHttpResponse(
+        APIEndPoints.changePassword,
+        request: request,
+        method: HttpMethodType.POST)));
   }
 
-  static Future<BaseResponseModel> forgotPasswordAPI({required Map request}) async {
-    return BaseResponseModel.fromJson(await handleResponse(await buildHttpResponse(APIEndPoints.forgotPassword, request: request, method: HttpMethodType.POST)));
+  static Future<BaseResponseModel> forgotPasswordAPI(
+      {required Map request}) async {
+    return BaseResponseModel.fromJson(await handleResponse(
+        await buildHttpResponse(APIEndPoints.forgotPassword,
+            request: request, method: HttpMethodType.POST)));
   }
 
   static Future<PetCenterRes> getPetCenterDetail() async {
-    return PetCenterRes.fromJson(await handleResponse(await buildHttpResponse(APIEndPoints.petCenterDetail, method: HttpMethodType.GET)));
+    return PetCenterRes.fromJson(await handleResponse(await buildHttpResponse(
+        APIEndPoints.petCenterDetail,
+        method: HttpMethodType.GET)));
   }
 
   static Future<List<NotificationData>> getNotificationDetail({
@@ -45,22 +59,32 @@ class AuthService {
     Function(bool)? lastPageCallBack,
   }) async {
     if (isLoggedIn.value) {
-      final notificationRes = NotificationRes.fromJson(await handleResponse(await buildHttpResponse("${APIEndPoints.getNotification}?per_page=$perPage&page=$page", method: HttpMethodType.GET)));
+      final notificationRes = NotificationRes.fromJson(await handleResponse(
+          await buildHttpResponse(
+              "${APIEndPoints.getNotification}?per_page=$perPage&page=$page",
+              method: HttpMethodType.GET)));
       if (page == 1) notifications.clear();
       notifications.addAll(notificationRes.notificationData);
-      lastPageCallBack?.call(notificationRes.notificationData.length != perPage);
+      lastPageCallBack
+          ?.call(notificationRes.notificationData.length != perPage);
       return notifications;
     } else {
       return [];
     }
   }
 
-  static Future<BaseResponseModel> removeNotification({required String notificationId}) async {
-    return BaseResponseModel.fromJson(await handleResponse(await buildHttpResponse('${APIEndPoints.removeNotification}?id=$notificationId', method: HttpMethodType.GET)));
+  static Future<BaseResponseModel> removeNotification(
+      {required String notificationId}) async {
+    return BaseResponseModel.fromJson(await handleResponse(
+        await buildHttpResponse(
+            '${APIEndPoints.removeNotification}?id=$notificationId',
+            method: HttpMethodType.GET)));
   }
 
   static Future<BaseResponseModel> clearAllNotification() async {
-    return BaseResponseModel.fromJson(await handleResponse(await buildHttpResponse(APIEndPoints.clearAllNotification, method: HttpMethodType.GET)));
+    return BaseResponseModel.fromJson(await handleResponse(
+        await buildHttpResponse(APIEndPoints.clearAllNotification,
+            method: HttpMethodType.GET)));
   }
   /* static Future<NotificationRes> getNotificationDetail() async {
     if (isLoggedIn.value) {
@@ -77,8 +101,10 @@ class AuthService {
       loginUserData(UserData());
     } else {
       final tempEmail = loginUserData.value.email;
-      final tempPASSWORD = getValueFromLocal(SharedPreferenceConst.USER_PASSWORD);
-      final tempIsRemeberMe = getValueFromLocal(SharedPreferenceConst.IS_REMEMBER_ME);
+      final tempPASSWORD =
+          getValueFromLocal(SharedPreferenceConst.USER_PASSWORD);
+      final tempIsRemeberMe =
+          getValueFromLocal(SharedPreferenceConst.IS_REMEMBER_ME);
       final tempUserName = loginUserData.value.userName;
       localStorage.erase();
       isLoggedIn(false);
@@ -96,19 +122,30 @@ class AuthService {
   }
 
   static Future<BaseResponseModel> logoutApi() async {
-    return BaseResponseModel.fromJson(await handleResponse(await buildHttpResponse(APIEndPoints.logout, method: HttpMethodType.GET)));
+    return BaseResponseModel.fromJson(await handleResponse(
+        await buildHttpResponse(APIEndPoints.logout,
+            method: HttpMethodType.GET)));
   }
 
   static Future<BaseResponseModel> deleteAccountCompletely() async {
-    return BaseResponseModel.fromJson(await handleResponse(await buildHttpResponse(APIEndPoints.deleteUserAccount, request: {}, method: HttpMethodType.POST)));
+    return BaseResponseModel.fromJson(await handleResponse(
+        await buildHttpResponse(APIEndPoints.deleteUserAccount,
+            request: {}, method: HttpMethodType.POST)));
   }
 
   static Future<ConfigurationResponse> getAppConfigurations() async {
-    return ConfigurationResponse.fromJson(await handleResponse(await buildHttpResponse('${APIEndPoints.appConfiguration}?is_authenticated=${isLoggedIn.value.getIntBool()}', request: {}, method: HttpMethodType.GET)));
+    return ConfigurationResponse.fromJson(await handleResponse(
+        await buildHttpResponse(
+            '${APIEndPoints.appConfiguration}?is_authenticated=${isLoggedIn.value.getIntBool()}',
+            request: {},
+            method: HttpMethodType.GET)));
   }
 
   static Future<EmployeeResponse> viewProfile({int? id}) async {
-    var res = EmployeeResponse.fromJson(await handleResponse(await buildHttpResponse('${APIEndPoints.userDetail}?id=${id ?? loginUserData.value.id}', method: HttpMethodType.GET)));
+    var res = EmployeeResponse.fromJson(await handleResponse(
+        await buildHttpResponse(
+            '${APIEndPoints.userDetail}?id=${id ?? loginUserData.value.id}',
+            method: HttpMethodType.GET)));
     return res;
   }
 
@@ -130,25 +167,37 @@ class AuthService {
     Function(dynamic)? onSuccess,
   }) async {
     if (isLoggedIn.value) {
-      MultipartRequest multiPartRequest = await getMultiPartRequest(APIEndPoints.updateProfile);
+      MultipartRequest multiPartRequest =
+          await getMultiPartRequest(APIEndPoints.updateProfile);
 
-      if (firstName.isNotEmpty) multiPartRequest.fields[UserKeys.firstName] = firstName;
-      if (lastName.isNotEmpty) multiPartRequest.fields[UserKeys.lastName] = lastName;
+      if (firstName.isNotEmpty)
+        multiPartRequest.fields[UserKeys.firstName] = firstName;
+      if (lastName.isNotEmpty)
+        multiPartRequest.fields[UserKeys.lastName] = lastName;
       if (mobile.isNotEmpty) multiPartRequest.fields[UserKeys.mobile] = mobile;
-      if (address.isNotEmpty) multiPartRequest.fields[UserKeys.address] = address;
+      if (address.isNotEmpty)
+        multiPartRequest.fields[UserKeys.address] = address;
       if (gender.isNotEmpty) multiPartRequest.fields[UserKeys.gender] = gender;
-      if (latitude.isNotEmpty) multiPartRequest.fields[UserKeys.latitude] = latitude;
-      if (longitude.isNotEmpty) multiPartRequest.fields[UserKeys.longitude] = longitude;
-      if (aboutSelf.isNotEmpty) multiPartRequest.fields[UserKeys.aboutSelf] = aboutSelf;
+      if (latitude.isNotEmpty)
+        multiPartRequest.fields[UserKeys.latitude] = latitude;
+      if (longitude.isNotEmpty)
+        multiPartRequest.fields[UserKeys.longitude] = longitude;
+      if (aboutSelf.isNotEmpty)
+        multiPartRequest.fields[UserKeys.aboutSelf] = aboutSelf;
       if (expert.isNotEmpty) multiPartRequest.fields[UserKeys.expert] = expert;
-      if (facebookLink.isNotEmpty) multiPartRequest.fields[UserKeys.facebookLink] = facebookLink;
-      if (instagramLink.isNotEmpty) multiPartRequest.fields[UserKeys.instagramLink] = instagramLink;
-      if (twitterLink.isNotEmpty) multiPartRequest.fields[UserKeys.twitterLink] = twitterLink;
-      if (dribbbleLink.isNotEmpty) multiPartRequest.fields[UserKeys.dribbbleLink] = dribbbleLink;
+      if (facebookLink.isNotEmpty)
+        multiPartRequest.fields[UserKeys.facebookLink] = facebookLink;
+      if (instagramLink.isNotEmpty)
+        multiPartRequest.fields[UserKeys.instagramLink] = instagramLink;
+      if (twitterLink.isNotEmpty)
+        multiPartRequest.fields[UserKeys.twitterLink] = twitterLink;
+      if (dribbbleLink.isNotEmpty)
+        multiPartRequest.fields[UserKeys.dribbbleLink] = dribbbleLink;
       // if (appStore.playerId.isNotEmpty) multiPartRequest.fields[UserKeys.playerId] = appStore.playerId;
 
       if (imageFile != null) {
-        multiPartRequest.files.add(await MultipartFile.fromPath(UserKeys.profileImage, imageFile.path));
+        multiPartRequest.files.add(await MultipartFile.fromPath(
+            UserKeys.profileImage, imageFile.path));
       }
 
       multiPartRequest.headers.addAll(buildHeaderTokens());
