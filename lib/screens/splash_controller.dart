@@ -25,7 +25,8 @@ class SplashScreenController extends GetxController {
 
   void init() {
     try {
-      final configurationResFromLocal = getValueFromLocal(APICacheConst.APP_CONFIGURATION_RESPONSE);
+      final configurationResFromLocal =
+          getValueFromLocal(APICacheConst.APP_CONFIGURATION_RESPONSE);
       if (configurationResFromLocal != null) {
         appConfigs(ConfigurationResponse.fromJson(configurationResFromLocal));
         appCurrency(appConfigs.value.currency);
@@ -37,7 +38,12 @@ class SplashScreenController extends GetxController {
   }
 }
 
-Rx<Future<ConfigurationResponse>> appConfigsFuture = Future(() => ConfigurationResponse(currency: Currency(), onesignalEmployeeApp: OnesignalEmployeeApp(), employeeAppUrl: EmployeeAppUrl(), zoom: ZoomConfig())).obs;
+Rx<Future<ConfigurationResponse>> appConfigsFuture = Future(() =>
+    ConfigurationResponse(
+        currency: Currency(),
+        onesignalEmployeeApp: OnesignalEmployeeApp(),
+        employeeAppUrl: EmployeeAppUrl(),
+        zoom: ZoomConfig())).obs;
 RxBool isLoading = false.obs;
 
 ///Get ChooseService List
@@ -53,7 +59,8 @@ getAppConfigurations() {
         final userData = getValueFromLocal(SharedPreferenceConst.USER_DATA);
         isLoggedIn(true);
         loginUserData.value = UserData.fromJson(userData);
-        if (loginUserData.value.userRole.contains(EmployeeKeyConst.petSitter)) {
+        if (loginUserData.value.userRole[0]
+            .contains(EmployeeKeyConst.petSitter)) {
           Get.offAll(() => ProfileScreen());
         } else {
           Get.offAll(() => DashboardScreen(), binding: BindingsBuilder(() {

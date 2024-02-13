@@ -7,12 +7,14 @@ import '../../utils/constants.dart';
 import '../booking_module/model/bookings_model.dart';
 import '../booking_module/services/booking_api.dart';
 
-class HomeController extends GetxController with GetSingleTickerProviderStateMixin {
+class HomeController extends GetxController
+    with GetSingleTickerProviderStateMixin {
   RxBool isLoading = false.obs;
   RxList<ReviewData> employeeReviewCacheList = RxList();
   RxList<BookingDataModel> bookingsCacheList = RxList();
   Rx<Future<List<ReviewData>>> getReview = Future(() => <ReviewData>[]).obs;
-  Rx<Future<List<BookingDataModel>>> bookings = Future(() => <BookingDataModel>[]).obs;
+  Rx<Future<List<BookingDataModel>>> bookings =
+      Future(() => <BookingDataModel>[]).obs;
 
   @override
   void onInit() {
@@ -27,7 +29,8 @@ class HomeController extends GetxController with GetSingleTickerProviderStateMix
 
   void getHomeBookings() {
     isLoading(true);
-    bookings(BookingApi.getHomeBookingList(bookings: bookingsCacheList)).whenComplete(() => isLoading(false));
+    bookings(BookingApi.getHomeBookingList(bookings: bookingsCacheList))
+        .whenComplete(() => isLoading(false));
   }
 
   void getReviewApi() {
@@ -41,9 +44,13 @@ class HomeController extends GetxController with GetSingleTickerProviderStateMix
   String scheduleDate(BookingDataModel appointment) {
     try {
       if (appointment.service.slug.contains(ServicesKeyConst.boarding)) {
-        return appointment.dropoffDateTime.isValidDateTime ? appointment.dropoffDateTime : " - ";
+        return appointment.dropoffDateTime.isValidDateTime
+            ? appointment.dropoffDateTime
+            : " - ";
       } else {
-        return appointment.serviceDateTime.isValidDateTime ? appointment.serviceDateTime : " - ";
+        return appointment.serviceDateTime.isValidDateTime
+            ? appointment.serviceDateTime
+            : " - ";
       }
     } catch (e) {
       log('scheduleDate E: $e');

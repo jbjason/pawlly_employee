@@ -170,29 +170,39 @@ class AuthService {
       MultipartRequest multiPartRequest =
           await getMultiPartRequest(APIEndPoints.updateProfile);
 
-      if (firstName.isNotEmpty)
+      if (firstName.isNotEmpty) {
         multiPartRequest.fields[UserKeys.firstName] = firstName;
-      if (lastName.isNotEmpty)
+      }
+      if (lastName.isNotEmpty) {
         multiPartRequest.fields[UserKeys.lastName] = lastName;
+      }
       if (mobile.isNotEmpty) multiPartRequest.fields[UserKeys.mobile] = mobile;
-      if (address.isNotEmpty)
+      if (address.isNotEmpty) {
         multiPartRequest.fields[UserKeys.address] = address;
+      }
       if (gender.isNotEmpty) multiPartRequest.fields[UserKeys.gender] = gender;
-      if (latitude.isNotEmpty)
+      if (latitude.isNotEmpty) {
         multiPartRequest.fields[UserKeys.latitude] = latitude;
-      if (longitude.isNotEmpty)
+      }
+      if (longitude.isNotEmpty) {
         multiPartRequest.fields[UserKeys.longitude] = longitude;
-      if (aboutSelf.isNotEmpty)
+      }
+      if (aboutSelf.isNotEmpty) {
         multiPartRequest.fields[UserKeys.aboutSelf] = aboutSelf;
+      }
       if (expert.isNotEmpty) multiPartRequest.fields[UserKeys.expert] = expert;
-      if (facebookLink.isNotEmpty)
+      if (facebookLink.isNotEmpty) {
         multiPartRequest.fields[UserKeys.facebookLink] = facebookLink;
-      if (instagramLink.isNotEmpty)
+      }
+      if (instagramLink.isNotEmpty) {
         multiPartRequest.fields[UserKeys.instagramLink] = instagramLink;
-      if (twitterLink.isNotEmpty)
+      }
+      if (twitterLink.isNotEmpty) {
         multiPartRequest.fields[UserKeys.twitterLink] = twitterLink;
-      if (dribbbleLink.isNotEmpty)
+      }
+      if (dribbbleLink.isNotEmpty) {
         multiPartRequest.fields[UserKeys.dribbbleLink] = dribbbleLink;
+      }
       // if (appStore.playerId.isNotEmpty) multiPartRequest.fields[UserKeys.playerId] = appStore.playerId;
 
       if (imageFile != null) {

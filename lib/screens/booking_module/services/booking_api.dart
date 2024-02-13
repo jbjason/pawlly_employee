@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pawlly_employee/models/review_data.dart';
 import 'package:pawlly_employee/utils/app_common.dart';
@@ -20,7 +23,10 @@ class BookingApi {
   }) async {
     String perPageQuery = '&per_page=$perPage';
     String pageQuery = '&page=$page';
-    final bookingRes = BookingRes.fromJson(await handleResponse(await buildHttpResponse("${APIEndPoints.getBooking}?status=$bookingType$perPageQuery$pageQuery", method: HttpMethodType.GET)));
+    final bookingRes = BookingRes.fromJson(await handleResponse(
+        await buildHttpResponse(
+            "${APIEndPoints.getBooking}?status=$bookingType$perPageQuery$pageQuery",
+            method: HttpMethodType.GET)));
     if (page == 1) bookings.clear();
     bookings.addAll(bookingRes.data.validate());
 
@@ -39,9 +45,15 @@ class BookingApi {
     Function(bool)? lastPageCallBack,
   }) async {
     String searchBooking = search.isNotEmpty ? '&search=$search' : '';
-    String statusFilter = filterByStatus.isNotEmpty ? '&status=$filterByStatus' : '';
-    String serviceFilter = filterByService.isNotEmpty ? '&system_service_name=$filterByService' : '';
-    final bookingRes = BookingRes.fromJson(await handleResponse(await buildHttpResponse("${APIEndPoints.getBooking}?page=$page&per_page=$perPage$statusFilter$serviceFilter$searchBooking", method: HttpMethodType.GET)));
+    String statusFilter =
+        filterByStatus.isNotEmpty ? '&status=$filterByStatus' : '';
+    String serviceFilter = filterByService.isNotEmpty
+        ? '&system_service_name=$filterByService'
+        : '';
+    final bookingRes = BookingRes.fromJson(await handleResponse(
+        await buildHttpResponse(
+            "${APIEndPoints.getBooking}?page=$page&per_page=$perPage$statusFilter$serviceFilter$searchBooking",
+            method: HttpMethodType.GET)));
     if (page == 1) bookings.clear();
     bookings.addAll(bookingRes.data.validate());
 
@@ -50,24 +62,36 @@ class BookingApi {
     return bookings.obs;
   }
 
-  static Future<BookingDetailRes> getBookingDetail({required int bookingId}) async {
-    return BookingDetailRes.fromJson(await handleResponse(await buildHttpResponse("${APIEndPoints.getBookingDetail}?id=$bookingId", method: HttpMethodType.GET)));
+  static Future<BookingDetailRes> getBookingDetail(
+      {required int bookingId}) async {
+    return BookingDetailRes.fromJson(await handleResponse(
+        await buildHttpResponse(
+            "${APIEndPoints.getBookingDetail}?id=$bookingId",
+            method: HttpMethodType.GET)));
   }
 
   static Future<BaseResponseModel> updateBooking({required Map request}) async {
-    return BaseResponseModel.fromJson(await handleResponse(await buildHttpResponse(APIEndPoints.bookingUpdate, request: request, method: HttpMethodType.POST)));
+    return BaseResponseModel.fromJson(await handleResponse(
+        await buildHttpResponse(APIEndPoints.bookingUpdate,
+            request: request, method: HttpMethodType.POST)));
   }
 
   static Future<BaseResponseModel> updateReview({required Map request}) async {
-    return BaseResponseModel.fromJson(await handleResponse(await buildHttpResponse(APIEndPoints.saveRating, request: request, method: HttpMethodType.POST)));
+    return BaseResponseModel.fromJson(await handleResponse(
+        await buildHttpResponse(APIEndPoints.saveRating,
+            request: request, method: HttpMethodType.POST)));
   }
 
   static Future<BaseResponseModel> deleteReview({required int id}) async {
-    return BaseResponseModel.fromJson(await handleResponse(await buildHttpResponse(APIEndPoints.deleteRating, request: {"id": id}, method: HttpMethodType.POST)));
+    return BaseResponseModel.fromJson(await handleResponse(
+        await buildHttpResponse(APIEndPoints.deleteRating,
+            request: {"id": id}, method: HttpMethodType.POST)));
   }
 
   static Future<BaseResponseModel> savePayment({required Map request}) async {
-    return BaseResponseModel.fromJson(await handleResponse(await buildHttpResponse(APIEndPoints.savePayment, request: request, method: HttpMethodType.POST)));
+    return BaseResponseModel.fromJson(await handleResponse(
+        await buildHttpResponse(APIEndPoints.savePayment,
+            request: request, method: HttpMethodType.POST)));
   }
 
   static Future<List<ReviewData>> getEmployeeReviews({
@@ -78,7 +102,10 @@ class BookingApi {
   }) async {
     if (isLoggedIn.value) {
       String employeeId = '&employee_id=${loginUserData.value.id}';
-      final reviewRes = ReviewRes.fromJson(await handleResponse(await buildHttpResponse("${APIEndPoints.getRating}?per_page=$perPage&page=$page$employeeId", method: HttpMethodType.GET)));
+      final reviewRes = ReviewRes.fromJson(await handleResponse(
+          await buildHttpResponse(
+              "${APIEndPoints.getRating}?per_page=$perPage&page=$page$employeeId",
+              method: HttpMethodType.GET)));
       if (page == 1) reviews.clear();
       reviews.addAll(reviewRes.reviewData);
       lastPageCallBack?.call(reviewRes.reviewData.length != perPage);
@@ -94,7 +121,14 @@ class BookingApi {
     required List<BookingDataModel> bookings,
     Function(bool)? lastPageCallBack,
   }) async {
-    final bookingRes = BookingRes.fromJson(await handleResponse(await buildHttpResponse("${APIEndPoints.getBooking}?per_page=$perPage&page=$page", method: HttpMethodType.GET)));
+    final response = await buildHttpResponse(
+        "${APIEndPoints.getBooking}?per_page=$perPage&page=$page",
+        method: HttpMethodType.GET);
+    print("Order.........................");
+    Logger().e(json.decode(response.body));
+    final result = await handleResponse(response);
+    Logger().f(result);
+    final bookingRes = BookingRes.fromJson(result);
     if (page == 1) bookings.clear();
     bookings.addAll(bookingRes.data);
     lastPageCallBack?.call(bookingRes.data.length != perPage);
@@ -106,7 +140,10 @@ class BookingApi {
     int perPage = 5,
   }) async {
     String employeeId = '&employee_id=${loginUserData.value.id}';
-    final reviewRes = ReviewRes.fromJson(await handleResponse(await buildHttpResponse("${APIEndPoints.getRating}?per_page=$perPage&page=$page$employeeId", method: HttpMethodType.GET)));
+    final reviewRes = ReviewRes.fromJson(await handleResponse(
+        await buildHttpResponse(
+            "${APIEndPoints.getRating}?per_page=$perPage&page=$page$employeeId",
+            method: HttpMethodType.GET)));
     return reviewRes.reviewData;
   }
 }

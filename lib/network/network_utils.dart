@@ -6,6 +6,7 @@ import 'package:get/get.dart' as getX;
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
+import 'package:logger/logger.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pawlly_employee/screens/auth/signin_screen.dart';
 import '../configs.dart';
@@ -33,14 +34,18 @@ Map<String, String> buildHeaderTokens({
     'global-localization': selectedLanguageCode.value,
   };
 
-  header.putIfAbsent(HttpHeaders.contentTypeHeader, () => 'application/json; charset=utf-8');
+  header.putIfAbsent(
+      HttpHeaders.contentTypeHeader, () => 'application/json; charset=utf-8');
 
   if (isLoggedIn.value && extraKeys['isStripePayment']) {
-    header.putIfAbsent(HttpHeaders.acceptHeader, () => 'application/x-www-form-urlencoded');
+    header.putIfAbsent(
+        HttpHeaders.acceptHeader, () => 'application/x-www-form-urlencoded');
     header[HttpHeaders.contentTypeHeader] = 'application/x-www-form-urlencoded';
-    header.putIfAbsent(HttpHeaders.authorizationHeader, () => 'Bearer ${extraKeys!['stripeKeyPayment']}');
+    header.putIfAbsent(HttpHeaders.authorizationHeader,
+        () => 'Bearer ${extraKeys!['stripeKeyPayment']}');
   } else if (isLoggedIn.value) {
-    header.putIfAbsent(HttpHeaders.authorizationHeader, () => 'Bearer ${loginUserData.value.apiToken}');
+    header.putIfAbsent(HttpHeaders.authorizationHeader,
+        () => 'Bearer ${loginUserData.value.apiToken}');
   }
 
   // log(jsonEncode(header));
@@ -71,7 +76,8 @@ Future<Response> buildHttpResponse(
   try {
     if (method == HttpMethodType.POST) {
       log('Request: ${jsonEncode(request)}');
-      response = await http.post(url, body: jsonEncode(request), headers: headers);
+      response =
+          await http.post(url, body: jsonEncode(request), headers: headers);
     } else if (method == HttpMethodType.DELETE) {
       response = await delete(url, headers: headers);
     } else if (method == HttpMethodType.PUT) {
@@ -89,11 +95,15 @@ Future<Response> buildHttpResponse(
       responseBody: response.body.trim(),
       methodtype: method.name,
     );
+    Logger().e(json.decode(response.body));
     // log('Response (${method.name}) ${response.statusCode}: ${response.body.trim().trim()}');
 
-    if (isLoggedIn.value && response.statusCode == 401 && !endPoint.startsWith('http')) {
+    if (isLoggedIn.value &&
+        response.statusCode == 401 &&
+        !endPoint.startsWith('http')) {
       return await reGenerateToken().then((value) async {
-        return await buildHttpResponse(endPoint, method: method, request: request, extraKeys: extraKeys);
+        return await buildHttpResponse(endPoint,
+            method: method, request: request, extraKeys: extraKeys);
       }).catchError((e) {
         throw errorSomethingWentWrong;
       });
@@ -130,7 +140,9 @@ Future<void> reGenerateToken() async {
   });
 }
 
-Future handleResponse(Response response, {HttpResponseType httpResponseType = HttpResponseType.JSON, bool? avoidTokenError}) async {
+Future handleResponse(Response response,
+    {HttpResponseType httpResponseType = HttpResponseType.JSON,
+    bool? avoidTokenError}) async {
   if (!await isNetworkAvailable()) {
     throw errorInternetNotAvailable;
   }
@@ -183,7 +195,8 @@ Future handleResponse(Response response, {HttpResponseType httpResponseType = Ht
 }
 
 //region CommonFunctions
-Future<Map<String, String>> getMultipartFields({required Map<String, dynamic> val}) async {
+Future<Map<String, String>> getMultipartFields(
+    {required Map<String, dynamic> val}) async {
   Map<String, String> data = {};
 
   val.forEach((key, value) {
@@ -193,16 +206,25 @@ Future<Map<String, String>> getMultipartFields({required Map<String, dynamic> va
   return data;
 }
 
-Future<MultipartRequest> getMultiPartRequest(String endPoint, {String? baseUrl}) async {
+Future<MultipartRequest> getMultiPartRequest(String endPoint,
+    {String? baseUrl}) async {
   String url = baseUrl ?? buildBaseUrl(endPoint).toString();
   // log(url);
   return MultipartRequest('POST', Uri.parse(url));
 }
 
-Future<void> sendMultiPartRequest(MultipartRequest multiPartRequest, {Function(dynamic)? onSuccess, Function(dynamic)? onError}) async {
-  http.Response response = await http.Response.fromStream(await multiPartRequest.send());
+Future<void> sendMultiPartRequest(MultipartRequest multiPartRequest,
+    {Function(dynamic)? onSuccess, Function(dynamic)? onError}) async {
+  http.Response response =
+      await http.Response.fromStream(await multiPartRequest.send());
   apiPrint(
-      url: multiPartRequest.url.toString(), headers: jsonEncode(multiPartRequest.headers), request: jsonEncode(multiPartRequest.fields), hasRequest: true, statusCode: response.statusCode, responseBody: response.body.trim(), methodtype: "MultiPart");
+      url: multiPartRequest.url.toString(),
+      headers: jsonEncode(multiPartRequest.headers),
+      request: jsonEncode(multiPartRequest.fields),
+      hasRequest: true,
+      statusCode: response.statusCode,
+      responseBody: response.body.trim(),
+      methodtype: "MultiPart");
   // log("Result: ${response.statusCode} - ${multiPartRequest.fields}");
   // log(response.body.trim());
   if (response.statusCode.isSuccessful()) {
@@ -212,25 +234,29 @@ Future<void> sendMultiPartRequest(MultipartRequest multiPartRequest, {Function(d
   }
 }
 
-Future<List<MultipartFile>> getMultipartImages({required List<PlatformFile> files, required String name}) async {
+Future<List<MultipartFile>> getMultipartImages(
+    {required List<PlatformFile> files, required String name}) async {
   List<MultipartFile> multiPartRequest = [];
 
   await Future.forEach<PlatformFile>(files, (element) async {
     int i = files.indexOf(element);
 
-    multiPartRequest.add(await MultipartFile.fromPath('$name[${i.toString()}]', element.path.validate()));
+    multiPartRequest.add(await MultipartFile.fromPath(
+        '$name[${i.toString()}]', element.path.validate()));
   });
 
   return multiPartRequest;
 }
 
-Future<List<MultipartFile>> getMultipartImages2({required List<XFile> files, required String name}) async {
+Future<List<MultipartFile>> getMultipartImages2(
+    {required List<XFile> files, required String name}) async {
   List<MultipartFile> multiPartRequest = [];
 
   await Future.forEach<XFile>(files, (element) async {
     int i = files.indexOf(element);
 
-    multiPartRequest.add(await MultipartFile.fromPath('$name[${i.toString()}]', element.path.validate()));
+    multiPartRequest.add(await MultipartFile.fromPath(
+        '$name[${i.toString()}]', element.path.validate()));
     log('MultipartFile: $name[${i.toString()}]');
   });
 
@@ -259,7 +285,8 @@ void apiPrint({
   bool fullLog = false,
 }) {
   if (fullLog) {
-    dev.log("┌───────────────────────────────────────────────────────────────────────────────────────────────────────");
+    dev.log(
+        "┌───────────────────────────────────────────────────────────────────────────────────────────────────────");
     dev.log("\u001b[93m Url: \u001B[39m $url");
     dev.log("\u001b[93m endPoint: \u001B[39m \u001B[1m$endPoint\u001B[22m");
     dev.log("\u001b[93m header: \u001B[39m \u001b[96m$headers\u001B[39m");
@@ -269,7 +296,8 @@ void apiPrint({
     dev.log(statusCode.isSuccessful() ? "\u001b[32m" : "\u001b[31m");
     dev.log('Response ($methodtype) $statusCode: ${formatJson(responseBody)}');
     dev.log("\u001B[0m");
-    dev.log("└───────────────────────────────────────────────────────────────────────────────────────────────────────");
+    dev.log(
+        "└───────────────────────────────────────────────────────────────────────────────────────────────────────");
   } else {
     log("┌───────────────────────────────────────────────────────────────────────────────────────────────────────");
     log("\u001b[93m Url: \u001B[39m $url");

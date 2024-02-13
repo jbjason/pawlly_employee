@@ -26,7 +26,10 @@ class HomeScreen extends StatelessWidget {
     return AppScaffold(
       hideAppBar: true,
       hasLeadingWidget: false,
-      isLoading: homeController.employeeReviewCacheList.isEmpty && homeController.bookingsCacheList.isEmpty ? null : homeController.isLoading,
+      isLoading: homeController.employeeReviewCacheList.isEmpty &&
+              homeController.bookingsCacheList.isEmpty
+          ? null
+          : homeController.isLoading,
       body: RefreshIndicator(
         onRefresh: () async {
           homeController.init();
@@ -40,6 +43,7 @@ class HomeScreen extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // appbar
                 Row(
                   children: [
                     Obx(
@@ -77,7 +81,10 @@ class HomeScreen extends StatelessWidget {
                           Obx(
                             () => SnapHelperWidget(
                               future: homeController.bookings.value,
-                              initialData: homeController.bookingsCacheList.isEmpty ? null : homeController.bookingsCacheList,
+                              initialData:
+                                  homeController.bookingsCacheList.isEmpty
+                                      ? null
+                                      : homeController.bookingsCacheList,
                               errorBuilder: (error) {
                                 return NoDataWidget(
                                   title: error,
@@ -90,7 +97,12 @@ class HomeScreen extends StatelessWidget {
                               loadingWidget: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text("${locale.value.loading}.... ", style: secondaryTextStyle(size: 14, fontFamily: fontFamilyFontBold)).paddingSymmetric(vertical: Get.height * 0.12),
+                                  Text("${locale.value.loading}.... ",
+                                          style: secondaryTextStyle(
+                                              size: 14,
+                                              fontFamily: fontFamilyFontBold))
+                                      .paddingSymmetric(
+                                          vertical: Get.height * 0.12),
                                 ],
                               ),
                               onSuccess: (bookingList) {
@@ -106,9 +118,12 @@ class HomeScreen extends StatelessWidget {
                                     },
                                     subTitle: locale.value.thereAreCurrentlyNo,
                                   ).paddingSymmetric(horizontal: 16),
-                                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16),
                                   itemBuilder: (context, index) {
-                                    return BookingsCard(booking: bookingList[index], isfromBookings: true);
+                                    return BookingsCard(
+                                        booking: bookingList[index],
+                                        isfromBookings: true);
                                   },
                                 );
                               },
@@ -126,13 +141,17 @@ class HomeScreen extends StatelessWidget {
                               onTap: () {
                                 bottomNavigateByIndex(2);
                               },
-                              list: homeController.employeeReviewCacheList.value,
+                              list:
+                                  homeController.employeeReviewCacheList.value,
                             ).paddingSymmetric(horizontal: 16),
                           ),
                           Obx(
                             () => SnapHelperWidget(
                               future: homeController.getReview.value,
-                              initialData: homeController.employeeReviewCacheList.isEmpty ? null : homeController.employeeReviewCacheList,
+                              initialData:
+                                  homeController.employeeReviewCacheList.isEmpty
+                                      ? null
+                                      : homeController.employeeReviewCacheList,
                               errorBuilder: (error) {
                                 return NoDataWidget(
                                   title: error,
@@ -146,7 +165,12 @@ class HomeScreen extends StatelessWidget {
                               loadingWidget: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text("${locale.value.loading}... ", style: secondaryTextStyle(size: 14, fontFamily: fontFamilyFontBold)).paddingSymmetric(vertical: Get.height * 0.12),
+                                  Text("${locale.value.loading}... ",
+                                          style: secondaryTextStyle(
+                                              size: 14,
+                                              fontFamily: fontFamilyFontBold))
+                                      .paddingSymmetric(
+                                          vertical: Get.height * 0.12),
                                 ],
                               ),
                               onSuccess: (reviews) {
@@ -155,7 +179,8 @@ class HomeScreen extends StatelessWidget {
                                   listAnimationType: ListAnimationType.None,
                                   itemCount: reviews.length,
                                   physics: const NeverScrollableScrollPhysics(),
-                                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16),
                                   emptyWidget: NoDataWidget(
                                     title: locale.value.noDataFound,
                                     subTitle: locale.value.thereAreNoReview,
@@ -166,7 +191,8 @@ class HomeScreen extends StatelessWidget {
                                     },
                                   ).paddingSymmetric(horizontal: 32),
                                   itemBuilder: (context, index) {
-                                    return EmployeeReviewComponents(employeeReview: reviews[index]);
+                                    return EmployeeReviewComponents(
+                                        employeeReview: reviews[index]);
                                   },
                                 );
                               },

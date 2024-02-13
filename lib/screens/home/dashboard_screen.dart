@@ -12,7 +12,8 @@ import 'home_controller.dart';
 
 class DashboardScreen extends StatelessWidget {
   DashboardScreen({Key? key}) : super(key: key);
-  final DashboardController dashboardController = Get.put(DashboardController());
+  final DashboardController dashboardController =
+      Get.put(DashboardController());
 
   @override
   Widget build(BuildContext context) {
@@ -21,13 +22,15 @@ class DashboardScreen extends StatelessWidget {
       child: AppScaffold(
         hideAppBar: true,
         isLoading: dashboardController.isLoading,
-        body: Obx(() => dashboardController.screen[dashboardController.currentIndex.value]),
+        body: Obx(() =>
+            dashboardController.screen[dashboardController.currentIndex.value]),
         bottomNavBar: Obx(
           () => NavigationBarTheme(
             data: NavigationBarThemeData(
               backgroundColor: context.cardColor,
               indicatorColor: context.primaryColor.withOpacity(0.1),
-              labelTextStyle: MaterialStateProperty.all(primaryTextStyle(size: 12)),
+              labelTextStyle:
+                  MaterialStateProperty.all(primaryTextStyle(size: 12)),
               surfaceTintColor: Colors.transparent,
               shadowColor: Colors.transparent,
             ),
@@ -53,23 +56,31 @@ class DashboardScreen extends StatelessWidget {
               },
               destinations: [
                 tab(
-                  iconData: Assets.navigationIcHomeOutlined.iconImage(color: darkGray, size: 22),
-                  activeIconData: Assets.navigationIcHomeFilled.iconImage(color: context.primaryColor, size: 22),
+                  iconData: Assets.navigationIcHomeOutlined
+                      .iconImage(color: darkGray, size: 22),
+                  activeIconData: Assets.navigationIcHomeFilled
+                      .iconImage(color: context.primaryColor, size: 22),
                   tabName: locale.value.home,
                 ),
                 tab(
-                  iconData: Assets.navigationIcCalendarOutlined.iconImage(color: darkGray, size: 22),
-                  activeIconData: Assets.navigationIcCalenderFilled.iconImage(color: context.primaryColor, size: 22),
+                  iconData: Assets.navigationIcCalendarOutlined
+                      .iconImage(color: darkGray, size: 22),
+                  activeIconData: Assets.navigationIcCalenderFilled
+                      .iconImage(color: context.primaryColor, size: 22),
                   tabName: locale.value.bookings,
                 ),
                 tab(
-                  iconData: Assets.profileIconsIcStarOutlined.iconImage(color: darkGray, size: 22),
-                  activeIconData: Assets.navigationIcStarFilled.iconImage(color: context.primaryColor, size: 22),
+                  iconData: Assets.profileIconsIcStarOutlined
+                      .iconImage(color: darkGray, size: 22),
+                  activeIconData: Assets.navigationIcStarFilled
+                      .iconImage(color: context.primaryColor, size: 22),
                   tabName: locale.value.myReviews,
                 ),
                 tab(
-                  iconData: Assets.navigationIcUserOutlined.iconImage(color: darkGray, size: 22),
-                  activeIconData: Assets.navigationIcUserFilled.iconImage(color: context.primaryColor, size: 22),
+                  iconData: Assets.navigationIcUserOutlined
+                      .iconImage(color: darkGray, size: 22),
+                  activeIconData: Assets.navigationIcUserFilled
+                      .iconImage(color: context.primaryColor, size: 22),
                   tabName: locale.value.profile,
                 ),
               ],
@@ -80,7 +91,10 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  NavigationDestination tab({required Widget iconData, required Widget activeIconData, required String tabName}) {
+  NavigationDestination tab(
+      {required Widget iconData,
+      required Widget activeIconData,
+      required String tabName}) {
     return NavigationDestination(
       icon: iconData,
       selectedIcon: activeIconData,

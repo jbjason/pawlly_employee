@@ -21,16 +21,46 @@ class SignInController extends GetxController {
   RxString userName = "".obs;
   Rx<LoginData> selectedDemoUser = LoginData().obs;
   List<LoginData> selectRole = [
-    LoginData(id: 1, serviceName: "Boarder", email: "miles@gmail.com", password: "12345678"),
-    LoginData(id: 2, serviceName: "Veterinarian", email: "felix@gmail.com", password: "12345678"),
-    LoginData(id: 3, serviceName: "Groomer", email: "richard@gmail.com", password: "12345678"),
-    LoginData(id: 4, serviceName: "Trainer", email: "tristan@gmail.com", password: "12345678"),
-    LoginData(id: 5, serviceName: "Walker", email: "pedro@gmail.com", password: "12345678"),
-    LoginData(id: 6, serviceName: "Daycare Taker", email: "justin@gmail.com", password: "12345678"),
-    LoginData(id: 7, serviceName: "Pet Sitter", email: "harry@gmail.com", password: "12345678"),
+    LoginData(
+        id: 1,
+        serviceName: "Boarder",
+        email: "miles@gmail.com",
+        password: "12345678"),
+    LoginData(
+        id: 2,
+        serviceName: "Veterinarian",
+        email: "felix@gmail.com",
+        password: "12345678"),
+    LoginData(
+        id: 3,
+        serviceName: "Groomer",
+        email: "richard@gmail.com",
+        password: "12345678"),
+    LoginData(
+        id: 4,
+        serviceName: "Trainer",
+        email: "tristan@gmail.com",
+        password: "12345678"),
+    LoginData(
+        id: 5,
+        serviceName: "Walker",
+        email: "pedro@gmail.com",
+        password: "12345678"),
+    LoginData(
+        id: 6,
+        serviceName: "Daycare Taker",
+        email: "justin@gmail.com",
+        password: "12345678"),
+    LoginData(
+        id: 7,
+        serviceName: "Pet Sitter",
+        email: "harry@gmail.com",
+        password: "12345678"),
   ];
-  TextEditingController emailCont = TextEditingController(text: Constants.DEFAULT_EMAIL);
-  TextEditingController passwordCont = TextEditingController(text: Constants.DEFAULT_PASS);
+  TextEditingController emailCont =
+      TextEditingController(text: Constants.DEFAULT_EMAIL);
+  TextEditingController passwordCont =
+      TextEditingController(text: Constants.DEFAULT_PASS);
 
   void toggleSwitch() {
     isRememberMe.value = !isRememberMe.value;
@@ -38,8 +68,10 @@ class SignInController extends GetxController {
 
   @override
   void onInit() {
-    final userIsRemeberMe = getValueFromLocal(SharedPreferenceConst.IS_REMEMBER_ME);
-    final userNameFromLocal = getValueFromLocal(SharedPreferenceConst.USER_NAME);
+    final userIsRemeberMe =
+        getValueFromLocal(SharedPreferenceConst.IS_REMEMBER_ME);
+    final userNameFromLocal =
+        getValueFromLocal(SharedPreferenceConst.USER_NAME);
     if (userNameFromLocal is String) {
       userName(userNameFromLocal);
     }
@@ -48,7 +80,8 @@ class SignInController extends GetxController {
       if (userEmail is String) {
         emailCont.text = userEmail;
       }
-      final userPASSWORD = getValueFromLocal(SharedPreferenceConst.USER_PASSWORD);
+      final userPASSWORD =
+          getValueFromLocal(SharedPreferenceConst.USER_PASSWORD);
       if (userPASSWORD is String) {
         passwordCont.text = userPASSWORD;
       }
@@ -67,25 +100,29 @@ class SignInController extends GetxController {
     };
 
     await AuthService.loginUser(request: req).then((value) async {
-      if (value.userData.userRole.contains(EmployeeKeyConst.veterinary) ||
-          value.userData.userRole.contains(EmployeeKeyConst.walking) ||
-          value.userData.userRole.contains(EmployeeKeyConst.boarding) ||
-          value.userData.userRole.contains(EmployeeKeyConst.grooming) ||
-          value.userData.userRole.contains(EmployeeKeyConst.training) ||
-          value.userData.userRole.contains(EmployeeKeyConst.dayCare) ||
-          value.userData.userRole.contains(EmployeeKeyConst.petSitter)) {
+      if (value.userData.userRole[0].contains(EmployeeKeyConst.veterinary) ||
+          value.userData.userRole[0].contains(EmployeeKeyConst.walking) ||
+          value.userData.userRole[0].contains(EmployeeKeyConst.boarding) ||
+          value.userData.userRole[0].contains(EmployeeKeyConst.grooming) ||
+          value.userData.userRole[0].contains(EmployeeKeyConst.training) ||
+          value.userData.userRole[0].contains(EmployeeKeyConst.dayCare) ||
+          value.userData.userRole[0].contains(EmployeeKeyConst.petSitter)) {
         loginUserData(value.userData);
 
-        setValueToLocal(SharedPreferenceConst.USER_DATA, loginUserData.toJson());
-        setValueToLocal(SharedPreferenceConst.USER_PASSWORD, passwordCont.text.trim());
+        setValueToLocal(
+            SharedPreferenceConst.USER_DATA, loginUserData.toJson());
+        setValueToLocal(
+            SharedPreferenceConst.USER_PASSWORD, passwordCont.text.trim());
         isLoading(false);
         isLoggedIn(true);
         setValueToLocal(SharedPreferenceConst.IS_LOGGED_IN, true);
-        setValueToLocal(SharedPreferenceConst.IS_REMEMBER_ME, isRememberMe.value);
+        setValueToLocal(
+            SharedPreferenceConst.IS_REMEMBER_ME, isRememberMe.value);
 
         ///This method called for update onesignal playerId to database
         reGenerateToken();
-        if (loginUserData.value.userRole.contains(EmployeeKeyConst.petSitter)) {
+        if (loginUserData.value.userRole[0]
+            .contains(EmployeeKeyConst.petSitter)) {
           Get.offAll(() => ProfileScreen());
         } else {
           Get.offAll(() => DashboardScreen(), binding: BindingsBuilder(() {
